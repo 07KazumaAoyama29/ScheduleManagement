@@ -1,36 +1,43 @@
 package main
 
 import (
-    "log"
-    "os"
+	"log"
+	"os"
 
-    "github.com/gin-gonic/gin"
-    "github.com/joho/godotenv"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 
-    "example.com/calendarapp/internal/handler"
-    "example.com/calendarapp/internal/infrastructure"
+	"example.com/calendarapp/internal/handler"
+	"example.com/calendarapp/internal/infrastructure"
 )
 
 func main() {
-    _ = godotenv.Load()
+	_ = godotenv.Load()
 
-    db, err := infrastructure.NewPostgres(os.Getenv("DATABASE_URL"))
-    if err != nil {
-        log.Fatalf("db connect: %v", err)
-    }
+	// DB 接続
+	db, err := infrastructure.NewPostgres(os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatalf("db connect: %v", err)
+	}
 
-    r := gin.Default()
+	// Gin + CORS
+	r := gin.Default()
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"http://localhost:3000"},
+		AllowMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
+		AllowHeaders: []string{"Origin", "Content-Type"},
+	}))
 
-     // ★ CORS: 開発用に全許可（本番では AllowOrigins を絞ってください）
-     r.Use(cors.New(cors.Config{
-        AllowOrigins:     []string{"http://localhost:3000"},
-        AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
-        AllowHeaders:     []string{"Origin", "Content-Type"},
-        ExposeHeaders:    []string{"Content-Length"},
-        AllowCredentials: true,
-    }))
+	// ルーティング
+	h := handler.NewEventHandler(db)
+	api := r.Group("/api")
+	{
+		api.GET("/events", h.List)
+		api.POST("/events", h.Create)
+	}
 
-    if err := r.Run(); err != nil {
-        log.Fatalf("server: %v", err)
-    }
+	if err := r.Run(); err != nil {
+		log.Fatalf("server: %v", err)
+	}
 }

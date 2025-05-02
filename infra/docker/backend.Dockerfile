@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine
+FROM golang:1.23-alpine
 WORKDIR /app
 # install git so go modules can be fetched
 RUN apk add --no-cache git
