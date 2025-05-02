@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS events (
+  id UUID PRIMARY KEY,
+  title TEXT NOT NULL,
+  start_at TIMESTAMPTZ NOT NULL,
+  end_at TIMESTAMPTZ NOT NULL,
+  rrule TEXT
+);
