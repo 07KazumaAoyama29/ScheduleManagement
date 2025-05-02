@@ -21,12 +21,14 @@ func main() {
 
     r := gin.Default()
 
-    h := handler.NewEventHandler(db)
-    api := r.Group("/api")
-    {
-        api.GET("/events", h.List)
-        api.POST("/events", h.Create)
-    }
+     // ★ CORS: 開発用に全許可（本番では AllowOrigins を絞ってください）
+     r.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"http://localhost:3000"},
+        AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
+        AllowHeaders:     []string{"Origin", "Content-Type"},
+        ExposeHeaders:    []string{"Content-Length"},
+        AllowCredentials: true,
+    }))
 
     if err := r.Run(); err != nil {
         log.Fatalf("server: %v", err)
