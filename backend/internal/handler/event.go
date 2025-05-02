@@ -7,7 +7,7 @@ import (
 
     "github.com/gin-gonic/gin"
     "github.com/google/uuid"
-    "your-calendar-app/internal/domain/model"
+    "example.com/calendarapp/internal/domain/model"
 )
 
 type EventHandler struct {

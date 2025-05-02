@@ -7,8 +7,8 @@ import (
     "github.com/gin-gonic/gin"
     "github.com/joho/godotenv"
 
-    "your-calendar-app/internal/handler"
-    "your-calendar-app/internal/infrastructure"
+    "example.com/calendarapp/internal/handler"
+    "example.com/calendarapp/internal/infrastructure"
 )
 
 func main() {
